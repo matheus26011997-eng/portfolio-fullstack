@@ -1,13 +1,12 @@
 // ============================================
 // API PROFISSIONAL - PORTFÓLIO FULL STACK
+// CONFIGURADO PARA VERCEL
 // ============================================
 
 const express = require('express');
 const cors = require('cors');
-const dotenv = require('dotenv');
 
 // Configuração
-dotenv.config();
 const app = express();
 
 // Middlewares
@@ -57,12 +56,25 @@ let mensagens = []; // Para formulário de contato
 // ROTAS DA API
 // ============================================
 
-// Rota de teste
+// Rota de teste (raiz)
 app.get('/', (req, res) => {
     res.json({ 
         mensagem: "🚀 API do Portfólio Profissional",
-        autor: "Seu Nome",
-        versao: "1.0.0"
+        autor: "Matheus",
+        versao: "1.0.0",
+        endpoints: {
+            projetos: "/api/projetos",
+            stats: "/api/stats",
+            contato: "/api/contato"
+        }
+    });
+});
+
+// Rota de teste para ver se API está no ar
+app.get('/api', (req, res) => {
+    res.json({ 
+        status: "online",
+        mensagem: "API funcionando perfeitamente!"
     });
 });
 
@@ -124,16 +136,23 @@ app.get('/api/stats', (req, res) => {
 });
 
 // ============================================
-// INICIAR SERVIDOR
+// CONFIGURAÇÃO PARA VERCEL (IMPORTANTE!)
 // ============================================
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`
+
+// Exportar o app para a Vercel
+module.exports = app;
+
+// Iniciar servidor apenas localmente
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`
     ╔════════════════════════════════════╗
     ║   🚀 SERVIDOR RODANDO!             ║
-    ║   📡 Porta: ${PORT}                    ║
-    ║   🌐 http://localhost:${PORT}        ║
+    ║   📡 Porta: ${PORT}                 ║
+    ║   🌐 http://localhost:${PORT}       ║
     ║   📚 API: http://localhost:${PORT}/api║
     ╚════════════════════════════════════╝
     `);
-});
+    });
+}
